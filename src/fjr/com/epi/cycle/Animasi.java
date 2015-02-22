@@ -21,8 +21,7 @@ import javafx.util.Duration;
 public class Animasi extends Application{
 
 	private Canvas canvas;
-	private Scene scene; 
-	
+
 	private GraphicsContext gc; 
 	
 	
@@ -55,6 +54,9 @@ public class Animasi extends Application{
 
 	private ArrayList< Point2D > listOfPoint = new  ArrayList<Point2D>() ;
 	
+	
+	ArrayList<Double> listOfAngle = new ArrayList<Double>() ; 
+	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		
@@ -68,7 +70,7 @@ public class Animasi extends Application{
 		primaryStage.setScene(new Scene(root)) ;
 		primaryStage.show(); 
 		
-		generateCircles();
+		generateCircles(angle);
 		redraw(gc); 
 		
 		timeLine = new Timeline(); 
@@ -90,9 +92,7 @@ public class Animasi extends Application{
 	}
 
 	
-	public void generateCircles(){
-
-		Random r = new Random(); 
+	public void generateCircles(double angle ){
 		double awal = 2; 
 		for( int i =0; i< numCircles ;i++){
 			listSpeedAngle[i] = awal;
@@ -100,13 +100,20 @@ public class Animasi extends Application{
 		}
 		
 		listOfCircle = new ArrayList<Circle>();
-
+		
+		double ang = 0; 
+		
+		for(int i=0; i< numCircles; i++){
+			listOfAngle.add(ang); 
+			ang = ang *  2; 
+		}
+			
 		double currentX = centerMainCircleX; 
 		double currentY = centerMainCircleY; 
 		
 		double currentRadius = radiusMainCircle; 
 		
-		double currentAngle = 0.; 
+		double currentAngle = angle; 
 		
 		for(int i=0; i < numCircles; i++){
 			Circle c = new Circle(); 
@@ -116,7 +123,7 @@ public class Animasi extends Application{
 			
 			listOfCircle.add(c); 
 			
-			currentAngle = currentAngle + 20; 
+			currentAngle = currentAngle * 2; 
 			
 			double x = currentRadius * Math.cos(currentAngle); 
 			double y = currentRadius * Math.sin(currentAngle); 
@@ -124,8 +131,7 @@ public class Animasi extends Application{
 			currentX = currentX + x; 
 			currentY = currentY - y; 
 			
-			currentRadius = currentRadius * 0.6; 
-			
+			currentRadius = currentRadius * 0.6; 	
 		}
 		
 		int m = listOfCircle.size(); 
@@ -149,7 +155,6 @@ public class Animasi extends Application{
 			c.setCenterX(currentX);
 			c.setCenterY(currentY); 
 
-//			currentAngle = currentAngle + listSpeedAngle[i] * currentTimeStep;
 			currentAngle = currentAngle * 2; 
 			
 			double x = c.getRadius() * Math.cos(currentAngle); 
@@ -161,7 +166,6 @@ public class Animasi extends Application{
 		}
 	}
 
-	
 	public void redraw(GraphicsContext gc){
 		
 		gc.setFill(Color.WHITE); 
@@ -174,24 +178,17 @@ public class Animasi extends Application{
 					c.getRadius() * 2 , c.getRadius() * 2  );
 		}
 		
-	
-		
+
 		int m = listOfCircle.size(); 
-//		
 		currentStrokeX = listOfCircle.get(m-1).getCenterX();
 		currentStrokeY = listOfCircle.get(m-1).getCenterY(); 
 		
 		Point2D p = new Point2D(currentStrokeX, currentStrokeY); 
 		
 		listOfPoint.add(p); 
-//		
+		
 		gc.setStroke(Color.RED); 
 		if(listOfPoint.size() > 1){
-//			gc.moveTo(listOfPoint.get(0).getX(),  listOfPoint.get(0).getY() );
-//			for(int i=1; i <  listOfPoint.size(); i++){
-//				gc.lineTo(listOfPoint.get(i).getX(), listOfPoint.get(i).getY() );
-//			}
-//			gc.stroke();
 			int awal = 0; 
 			int akhir= 1; 
 			for(int i=0; i< listOfPoint.size()-1 ;i++){
@@ -200,17 +197,9 @@ public class Animasi extends Application{
 				awal++; 
 				akhir++; 
 			}
-			
 		}
 		
-		if(listOfPoint.size() > 100){
-			ArrayList<Point2D> p_temp = new ArrayList<Point2D>(); 
-//			for(int i = 0; i< 10; i++){
-//				p_temp.add(listOfPoint.get(i));
-//			}
-//			for(int i =0; i< )
-//			System.out.println("remove");
-//			listOfPoint.clear();
+		if(listOfPoint.size() > 5000){
 			for( int i= 0; i< 2; i++){
 				listOfPoint.remove(0) ; 
 			}
